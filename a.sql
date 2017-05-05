@@ -776,3 +776,100 @@ values
 	('Find Me',180,'enginn texti',2,3,2)
     ;
 
+#a
+select lag.nafn as 'nafn lags',diskur.nafn as 'nafn disks' from lag
+inner join diskur
+on diskur.ID=lag.diskur_ID
+where diskur_ID= 1;
+
+#b
+select lag.nafn as 'lag',flytjandi.nafn as 'diskur' from lag
+inner join flytjandi
+on lag.flytjandi_ID=flytjandi.ID
+where flytjandi_ID=1;
+
+#c
+select lag.nafn as 'lag',tegund.nafn as 'tegund',diskur.nafn as 'diskur' from lag
+inner join diskur
+on diskur.id=lag.diskur_ID
+inner join tegund
+on tegund.ID=diskur.tegund_ID
+where diskur.tegund_ID =4;
+
+#d
+select nafn,lengd from lag
+where lengd>300;
+
+#e
+select nafn,utgafudagur from diskur
+where year(utgafudagur)>2010;
+
+#f
+select diskur.nafn as 'diksur',flytjandi.nafn 'flytjandi',diskur.utgafudagur,utgefandi.nafn 'útgefandi' from diskur
+inner join lag
+on diskur.ID=lag.diskur_ID
+inner join flytjandi
+on lag.flytjandi_ID=flytjandi.ID
+inner join utgefandi
+on diskur.utgefandi_ID=utgefandi.ID
+where diskur.utgefandi_ID=utgefandi.ID
+group by utgefandi.nafn
+;
+#g
+select lag.nafn as 'lag',lag.lengd,flytjandi.nafn 'flytjandi',utgefandi.nafn 'útgefandi'from lag
+inner join flytjandi
+on flytjandi.ID=lag.flytjandi_ID
+inner join diskur
+on diskur.ID=lag.diskur_ID
+inner join utgefandi
+on utgefandi.ID=diskur.utgefandi_ID
+order by lag.lengd desc
+limit 5;
+
+#h
+select count(diskur.tegund_ID) as 'diskar',tegund.nafn as 'tegund' from diskur
+inner join tegund
+on diskur.tegund_ID=tegund.ID
+group by diskur.tegund_ID
+order by count(diskur.tegund_ID) desc
+limit 2;
+
+#i
+select utgefandi.nafn as 'útgefandi', count(diskur.utgefandi_ID) as 'diskar' from diskur
+inner join utgefandi
+on utgefandi.ID=diskur.utgefandi_ID
+where utgefandi_ID=diskur.utgefandi_ID
+group by diskur.utgefandi_ID
+order by count(diskur.utgefandi_ID)
+limit 3;
+
+#j
+select diskur.nafn as 'diskur', tegund.nafn as 'tegund', utgefandi.nafn as 'útgefandi',diskur.utgafudagur as 'diskur' from diskur
+inner join utgefandi
+on utgefandi.ID=diskur.utgefandi_ID
+inner join tegund
+on tegund.ID=diskur.tegund_ID
+where utgafudagur>'1998-01-01' and utgafudagur<'2017-01-01';
+
+#k
+select nafn from lag
+where nafn like 'A%' or nafn like '%s%';
+
+#l
+select nafn,TIMESTAMPDIFF(YEAR,faedingardagur,CURDATE()) AS age from flytjandi;
+
+#m
+select avg(lengd) as 'Sek' from lag;
+
+#n
+select flytjandi.nafn,count(lag.ID) as 'lög' from lag
+inner join flytjandi
+on flytjandi.ID=lag.flytjandi_ID
+group by lag.flytjandi_ID
+having count(lag.flytjandi_ID)>4;
+
+#o
+select distinct flytjandi.nafn as 'flytjandi', lag.nafn as 'lag', flytjandi.faedingardagur from lag
+inner join flytjandi
+on flytjandi.ID=lag.flytjandi_ID
+limit 15 ;
